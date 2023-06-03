@@ -87,6 +87,10 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
 
+    // UnitTest
+    testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("junit:junit:4.12")
+
     // Coil
     implementation("io.coil-kt:coil-compose:2.2.2")
 

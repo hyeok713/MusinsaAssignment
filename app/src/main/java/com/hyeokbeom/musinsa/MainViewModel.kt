@@ -1,11 +1,9 @@
 package com.hyeokbeom.musinsa
 
 import androidx.lifecycle.ViewModel
-import com.hyeokbeom.domain.model.InterviewResponse
+import com.hyeokbeom.domain.model.Item
 import com.hyeokbeom.domain.usecase.InterviewUseCase
-import com.hyeokbeom.shared.Log
 import com.hyeokbeom.shared.executeResult
-import com.hyeokbeom.shared.launchOnDefault
 import com.hyeokbeom.shared.launchOnIO
 
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,20 +14,22 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val interviewUseCase: InterviewUseCase
 ) : ViewModel() {
-    val data = MutableStateFlow<InterviewResponse?>(null)
+    val item = MutableStateFlow<List<Item>?>(emptyList())
 
     init {
-        fetch()
+        fetchData()
     }
 
-    private fun fetch() = launchOnIO {
+    /**
+     * fetchData
+     * [메인 화면 데이터 요청]
+     * - Response Success 인 경우 list data 전달
+     * - Response Failure 인 경우 null 전달
+     */
+    private fun fetchData() = launchOnIO {
         interviewUseCase().executeResult(
-            onSuccess = {
-                Log.e("성공함")
-            },
-            onFailure = {
-                Log.e("실패함")
-            }
+            onSuccess = { item.value = it.list },
+            onFailure = { item.value = null }
         )
     }
 }
