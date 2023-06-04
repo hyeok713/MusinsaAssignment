@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.hyeokbeom.domain.model.Contents
 import com.hyeokbeom.domain.model.Footer
 import com.hyeokbeom.domain.model.Header
@@ -58,6 +59,8 @@ private fun Section(item: Item) = with(item) {
 /**
  * Header
  * [Header 뷰 영역]
+ * @param header
+ * - iconURL, linkURL could be 'null'
  */
 @Composable
 private fun HeaderView(header: Header) = with(header) {
@@ -66,18 +69,38 @@ private fun HeaderView(header: Header) = with(header) {
             .fillMaxWidth()
             .height(52.dp)
             .padding(start = 16.dp, end = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        MusinsaStyleText(
-            text = title,
-            style = MusinsaTextStyle.Header
-        )
+        /* Text, Icon Block */
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            MusinsaStyleText(
+                text = title,
+                style = MusinsaTextStyle.Header
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            // In case of iconURL data exist
+            iconURL?.let { url ->
+                AsyncImage(
+                    model = url,
+                    contentDescription = "아이콘",
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+        }
+
+        linkURL?.let { MusinsaStyleText(text = "전체", style = MusinsaTextStyle.HeaderOption) }
     }
 }
 
 /**
  * Contents
  * [Contents 뷰 영역]
+ * @param contents
  */
 @Composable
 private fun ContentsView(contents: Contents) {
@@ -87,6 +110,7 @@ private fun ContentsView(contents: Contents) {
 /**
  * Footer
  * [Footer 뷰 영역]
+ * @param footer
  */
 @Composable
 private fun FooterView(footer: Footer) {

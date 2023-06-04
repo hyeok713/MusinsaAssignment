@@ -15,10 +15,10 @@ enum class MusinsaTextStyle(
     var color: Color,
     var fontWeight: FontWeight = FontWeight.Normal
 ) {
-    Header(16, Color.Black, FontWeight.Bold),
-    HeaderOption(24, Color.LightGray, FontWeight.Light),
+    Header(14, Color.Black, FontWeight.Bold),
+    HeaderOption(12, Color.Gray, FontWeight.Light),
     Footer(26, Color.Black),
-    BrandName(22, Color.LightGray),
+    BrandName(22, Color.Gray),
     Price(24, Color.Black),
     SaleRate(24, Color.Red),
     Banner(32, Color.White),
