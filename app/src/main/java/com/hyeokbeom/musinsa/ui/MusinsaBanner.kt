@@ -1,4 +1,3 @@
-import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -6,6 +5,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +16,7 @@ import coil.compose.AsyncImage
 import com.hyeokbeom.domain.model.Banner
 import com.hyeokbeom.musinsa.ui.MusinsaStyleText
 import com.hyeokbeom.musinsa.ui.MusinsaTextStyle
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 
 private val currentBannerPage = MutableStateFlow(Int.MAX_VALUE / 2)
@@ -24,7 +25,6 @@ private fun setCurrentPage(page: Int) {
     currentBannerPage.value = page
 }
 
-@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MusinsaStyleBanner(banners: List<Banner>) {
@@ -34,6 +34,12 @@ fun MusinsaStyleBanner(banners: List<Banner>) {
     val startIndex = (startPage * bannerSize) + 0
 
     val pagerState = rememberPagerState(initialPage = startIndex)
+
+    /* currentBannerPage 상태값 변경시 3초 후 페이지 스크롤 */
+    LaunchedEffect(key1 = currentBannerPage.collectAsState().value) {
+        delay(3000)
+        pagerState.animateScrollToPage(page = pagerState.currentPage.inc())
+    }
 
     Box {
         HorizontalPager(
@@ -73,7 +79,7 @@ fun MusinsaStyleBanner(banners: List<Banner>) {
                     }
                 }
 
-                // 적용된 페이지 상태값 변경
+                /* 적용된 페이지 상태값 변경 */
                 setCurrentPage(pagerState.settledPage)
             }
         }
