@@ -1,5 +1,6 @@
 package com.hyeokbeom.musinsa
 
+import MusinsaStyleBanner
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,10 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.hyeokbeom.domain.model.Contents
-import com.hyeokbeom.domain.model.Footer
-import com.hyeokbeom.domain.model.Header
-import com.hyeokbeom.domain.model.Item
+import com.hyeokbeom.domain.model.*
 import com.hyeokbeom.musinsa.ui.MusinsaStyleText
 import com.hyeokbeom.musinsa.ui.MusinsaTextStyle
 
@@ -101,11 +99,59 @@ private fun HeaderView(header: Header) = with(header) {
  * Contents
  * [Contents 뷰 영역]
  * @param contents
+ * - contents type 값에 따라 뷰 분류
  */
 @Composable
 private fun ContentsView(contents: Contents) {
+    when (contents.type) {
+        ContentType.BANNER.name -> {
+            MusinsaStyleBanner(contents.banners)
+        }
+
+        ContentType.GRID.name -> {
+            GridContents(contents)
+        }
+
+        ContentType.STYLE.name -> {
+            StylesContents(contents)
+        }
+
+        ContentType.SCROLL.name -> {
+            ScrollContents(contents)
+        }
+    }
+}
+
+/**
+ * GridContents
+ * [Grid 컨텐츠 뷰]
+ * @param contents
+ */
+@Composable
+private fun GridContents(contents: Contents) = with(contents) {
 
 }
+
+/**
+ * StylesContents
+ * [Style 컨텐츠 뷰]
+ * @param contents
+ */
+@Composable
+private fun StylesContents(contents: Contents) = with(contents) {
+
+}
+
+/**
+ * ScrollContents
+ * [Scroll 컨텐츠 뷰]
+ * @param contents
+ */
+@Composable
+private fun ScrollContents(contents: Contents) = with(contents) {
+
+}
+
 
 /**
  * Footer

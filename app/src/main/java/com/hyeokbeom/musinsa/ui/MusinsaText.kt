@@ -22,7 +22,9 @@ enum class MusinsaTextStyle(
     Price(24, Color.Black),
     SaleRate(24, Color.Red),
     Banner(32, Color.White),
-    Description(26, Color.White),
+    BannerTitle(16, Color.White, FontWeight.Bold),
+    BannerDescription(12, Color.White),
+    BannerIndicator(10, Color.White),
     Indicator(14, Color.White)
 }
 
