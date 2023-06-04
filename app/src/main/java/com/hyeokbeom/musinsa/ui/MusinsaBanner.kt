@@ -1,3 +1,7 @@
+@file:OptIn(ExperimentalFoundationApi::class)
+
+package com.hyeokbeom.musinsa.ui
+
 import android.content.res.Resources
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -17,8 +21,6 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImage
 import com.hyeokbeom.domain.model.Banner
-import com.hyeokbeom.musinsa.ui.MusinsaStyleText
-import com.hyeokbeom.musinsa.ui.MusinsaTextStyle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -33,7 +35,6 @@ private fun setCurrentPage(page: Int) {
  * [배너 컨텐츠 뷰 페이저]
  * @param banners
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MusinsaStyleBanner(banners: List<Banner>) {
     val bannerSize = banners.size
@@ -110,21 +111,21 @@ fun BannerItem(banner: Banner) {
     val bannerUiInfo = LocalBannerUiInfo.current
     var itemX by remember { mutableStateOf(0f) }
 
-    ConstraintLayout(
-        modifier = Modifier.fillMaxWidth()
-    ) {
+    ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
         val (title, description) = createRefs()
+
         AsyncImage(
             model = banner.thumbnailURL,
             contentDescription = "배너 이미지",
             contentScale = ContentScale.FillWidth,
             modifier = Modifier
                 .fillMaxWidth()
-                .onGloballyPositioned { itemX = it.positionInWindow().x },
+                .onGloballyPositioned { itemX = it.positionInWindow().x }
         )
 
         val offsetFromCenterPx = itemX - bannerUiInfo.xForCenteredItemPx
 
+        /** Parallax Text View **/
         MusinsaStyleText(
             modifier = Modifier
                 .constrainAs(title) {
@@ -142,6 +143,7 @@ fun BannerItem(banner: Banner) {
             style = MusinsaTextStyle.BannerTitle
         )
 
+        /** Parallax Text View **/
         MusinsaStyleText(
             modifier = Modifier
                 .constrainAs(description) {

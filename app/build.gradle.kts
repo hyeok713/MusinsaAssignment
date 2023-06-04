@@ -80,6 +80,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling:1.4.3")
     implementation("androidx.compose.material:material:1.4.3")
     implementation("androidx.compose.ui:ui-util:1.4.3")
+    implementation("androidx.compose.foundation:foundation:1.4.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
@@ -100,7 +101,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:3.14.9")
-    
+
     implementation("dev.chrisbanes.snapper:snapper:0.2.2")
 
 

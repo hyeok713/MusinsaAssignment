@@ -1,7 +1,5 @@
 package com.hyeokbeom.musinsa
 
-import LocalBannerUiInfo
-import MusinsaStyleBanner
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,9 +13,11 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.hyeokbeom.domain.model.*
-import com.hyeokbeom.musinsa.ui.MusinsaStyleText
-import com.hyeokbeom.musinsa.ui.MusinsaTextStyle
+import com.hyeokbeom.domain.model.Contents
+import com.hyeokbeom.domain.model.Footer
+import com.hyeokbeom.domain.model.Header
+import com.hyeokbeom.domain.model.Item
+import com.hyeokbeom.musinsa.ui.*
 
 /**
  * MainScreen
@@ -120,7 +120,7 @@ private fun ContentsView(contents: Contents) {
         }
 
         ContentType.GRID.name -> {
-            GridContents(contents)
+            MusinsaStyleGrid(contents.goods) 
         }
 
         ContentType.STYLE.name -> {
