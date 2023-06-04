@@ -1,5 +1,6 @@
 package com.hyeokbeom.musinsa
 
+import LocalBannerUiInfo
 import MusinsaStyleBanner
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,8 +8,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -105,7 +108,15 @@ private fun HeaderView(header: Header) = with(header) {
 private fun ContentsView(contents: Contents) {
     when (contents.type) {
         ContentType.BANNER.name -> {
-            MusinsaStyleBanner(contents.banners)
+            val uiInfo = BannerUiInfo.create(
+                screenWidthDp = LocalConfiguration.current.screenWidthDp.dp.value,
+                itemWidthDp = LocalConfiguration.current.screenWidthDp.dp.value,
+                parallaxOffsetFactor = .33f,
+            )
+
+            CompositionLocalProvider(LocalBannerUiInfo provides uiInfo) {
+                MusinsaStyleBanner(contents.banners)
+            }
         }
 
         ContentType.GRID.name -> {

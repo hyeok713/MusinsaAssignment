@@ -2,6 +2,7 @@ package com.hyeokbeom.musinsa.ui
 
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
@@ -30,10 +31,12 @@ enum class MusinsaTextStyle(
 
 @Composable
 fun MusinsaStyleText(
+    modifier: Modifier = Modifier,
     text: String,
     style: MusinsaTextStyle
 ): Unit = Text(
     text = text,
+    modifier = modifier,
     fontSize = style.fontSize.sp,
     color = style.color,
     fontWeight = style.fontWeight,
