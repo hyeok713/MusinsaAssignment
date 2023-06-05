@@ -11,18 +11,37 @@ import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.hyeokbeom.domain.model.Contents
 import com.hyeokbeom.domain.model.Footer
 import com.hyeokbeom.domain.model.Header
 import com.hyeokbeom.domain.model.Item
 import com.hyeokbeom.musinsa.ui.*
+import kotlinx.coroutines.flow.MutableStateFlow
+
+/**
+ * LocalComposition for Section
+ */
+internal val LocalSectionProvider = staticCompositionLocalOf { SectionProvider() }
+
+internal class SectionProvider(val viewModel: MainViewModel? = null) {
+    var footerVisibilityState = MutableStateFlow(true)
+
+    interface FooterClickListener {
+        fun onClick(type: String)
+    }
+
+    lateinit var footerClickListener: FooterClickListener
+}
 
 /**
  * MainScreen
@@ -37,7 +56,13 @@ fun MainScreen(list: List<Item>?) {
             modifier = Modifier.fillMaxSize(),
             state = scrollState
         ) {
-            items(list) { Section(it) }
+            items(list) {
+                val section = SectionProvider(hiltViewModel())
+
+                CompositionLocalProvider(LocalSectionProvider provides section) {
+                    Section(it)
+                }
+            }
         }
     } ?: EmptyListScreen()
 }
@@ -146,35 +171,39 @@ private fun ContentsView(contents: Contents) {
 @Composable
 private fun FooterView(footer: Footer) {
     val footerType = FooterType.values().find { it.name == footer.type }
+    val localSectionPreview = LocalSectionProvider.current
+    val isFooterVisible = localSectionPreview.footerVisibilityState.collectAsState()
 
     require(footerType != null)
 
-    Box(
-        modifier = Modifier.fillMaxWidth(),
-        contentAlignment = Alignment.Center
-    ) {
-        OutlinedButton(
-            onClick = { },
-            modifier = Modifier.fillMaxWidth(0.94f),
-            border = BorderStroke(1.dp, Color.LightGray),
-            shape = RoundedCornerShape(50),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.LightGray)
+    if (isFooterVisible.value) {
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
         ) {
-            Row {
-                footer.iconURL?.let {
-                    AsyncImage(
-                        model = it,
-                        contentDescription = "Footer 아이콘",
-                        modifier = Modifier.size(12.dp)
+            OutlinedButton(
+                onClick = { localSectionPreview.footerClickListener.onClick(footerType.name) },
+                modifier = Modifier.fillMaxWidth(0.94f),
+                border = BorderStroke(1.dp, Color.LightGray),
+                shape = RoundedCornerShape(50),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.LightGray)
+            ) {
+                Row {
+                    footer.iconURL?.let {
+                        AsyncImage(
+                            model = it,
+                            contentDescription = "Footer 아이콘",
+                            modifier = Modifier.size(12.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    MusinsaStyleText(
+                        text = footerType.label,
+                        style = footerType.fontStyle
                     )
                 }
-
-                Spacer(modifier = Modifier.width(4.dp))
-
-                MusinsaStyleText(
-                    text = footerType.label,
-                    style = footerType.fontStyle
-                )
             }
         }
     }

@@ -2,8 +2,11 @@ package com.hyeokbeom.musinsa
 
 import com.hyeokbeom.musinsa.ui.MusinsaTextStyle
 
-enum class ContentType {
-    BANNER, GRID, SCROLL, STYLE
+enum class ContentType(val column: Int = 0) {
+    BANNER,
+    GRID(3),
+    SCROLL,
+    STYLE(3)
 }
 
 enum class FooterType(

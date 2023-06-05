@@ -35,7 +35,8 @@ enum class MusinsaTextStyle(
     BannerIndicator(10, Color.White),
     Indicator(14, Color.White),
     FooterRefresh(10, Color.Black, FontWeight.SemiBold, type = "REFRESH"),
-    FooterMore(10, Color.Black, FontWeight.SemiBold, type = "MORE")
+    FooterMore(10, Color.Black, FontWeight.SemiBold, type = "MORE"),
+    Coupon(10, Color.White, FontWeight.Light)
 }
 
 @Composable

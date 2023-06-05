@@ -3,8 +3,9 @@ package com.hyeokbeom.musinsa.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
@@ -17,17 +18,21 @@ import com.hyeokbeom.shared.decimalFormat
  * [Grid Type 상품 뷰]
  */
 @Composable
-fun GridGoodItem(good: Good = Good()) = with(good) {
-    ConstraintLayout(modifier = Modifier.padding(4.dp)) {
+fun GridGoodItem(
+    good: Good = Good(),
+    modifier: Modifier
+) = with(good) {
+    ConstraintLayout(modifier = modifier.padding(4.dp)) {
         val (column, row) = createRefs()
         Column(modifier = Modifier.constrainAs(column) {}) {
-            Box {
+            Box (contentAlignment = Alignment.BottomStart){
                 AsyncImage(
                     model = thumbnailURL,
                     contentDescription = "상품 이미지"
                 )
 
-                Coupon().takeIf { good.hasCoupon }
+                takeIf { good.hasCoupon }?.let { Coupon() }
+
             }
 
             MusinsaStyleText(text = brandName, style = MusinsaTextStyle.BrandName)
@@ -60,7 +65,14 @@ fun ScrollGoodItem(good: Good) = with(good) {
 
 }
 
+@Preview
 @Composable
-fun Coupon() {
+private fun Coupon() {
+    MusinsaStyleText(
+        text = " 쿠폰 ",
+        style = MusinsaTextStyle.Coupon,
+        modifier = Modifier
+            .background(color = com.hyeokbeom.musinsa.ui.theme.Coupon)
 
+    )
 }

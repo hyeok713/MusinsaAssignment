@@ -32,4 +32,20 @@ class MainViewModel @Inject constructor(
             onFailure = { item.value = null }
         )
     }
+
+    /**
+     * getAdditionalList
+     * [컨텐츠 1열 추가 정보]
+     * @param list 총 컨텐츠
+     * @param currentIndex 표시되고 있는 마지막 열의 인덱스
+     * - also check if next list exist
+     */
+    fun <T : Any> getAdditionalList(
+        list: List<T>,
+        currentIndex : Int,
+    ): Pair<T, Boolean> {
+        val result = list[currentIndex + 1]
+        val isLast: Boolean = list.lastIndex == currentIndex + 1
+        return Pair(result, isLast)
+    }
 }
