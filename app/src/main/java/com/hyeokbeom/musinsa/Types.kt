@@ -2,7 +2,7 @@ package com.hyeokbeom.musinsa
 
 import com.hyeokbeom.musinsa.ui.MusinsaTextStyle
 
-enum class ContentType(val column: Int = 0) {
+enum class ContentType(val row: Int = 0) {
     BANNER,
     GRID(3),
     SCROLL,

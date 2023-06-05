@@ -1,6 +1,5 @@
 package com.hyeokbeom.musinsa.ui
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -29,7 +28,7 @@ fun MusinsaStyleScroll(goods: List<Good>) {
     }
 
     localSectionProvider.footerClickListener = object : SectionProvider.FooterClickListener {
-        override fun onClick(type: String) {
+        override fun onClick() {
             goodsToDraw = goods.shuffled()
         }
     }

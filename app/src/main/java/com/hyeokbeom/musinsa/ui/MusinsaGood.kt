@@ -1,5 +1,6 @@
 package com.hyeokbeom.musinsa.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -11,6 +12,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import coil.compose.AsyncImage
 import com.hyeokbeom.domain.model.Good
+import com.hyeokbeom.domain.model.Style
 import com.hyeokbeom.shared.decimalFormat
 
 /**
@@ -20,12 +22,13 @@ import com.hyeokbeom.shared.decimalFormat
 @Composable
 fun GoodView(
     good: Good = Good(),
+    @SuppressLint("ModifierParameter")
     modifier: Modifier = Modifier
 ) = with(good) {
     ConstraintLayout(modifier = modifier.padding(4.dp)) {
         val (column, row) = createRefs()
         Column(modifier = Modifier.constrainAs(column) {}) {
-            Box (contentAlignment = Alignment.BottomStart){
+            Box(contentAlignment = Alignment.BottomStart) {
                 AsyncImage(
                     model = thumbnailURL,
                     contentDescription = "상품 이미지"
@@ -56,15 +59,6 @@ fun GoodView(
     }
 }
 
-/**
- * ScrollGoodItem
- * [Scroll Type 상품 뷰]
- */
-@Composable
-fun ScrollGoodItem(good: Good) = with(good) {
-
-}
-
 @Preview
 @Composable
 private fun Coupon() {
@@ -73,6 +67,25 @@ private fun Coupon() {
         style = MusinsaTextStyle.Coupon,
         modifier = Modifier
             .background(color = com.hyeokbeom.musinsa.ui.theme.Coupon)
-
     )
+}
+
+
+@Composable
+fun StyleView(
+    style: Style,
+    @SuppressLint("ModifierParameter")
+    modifier: Modifier = Modifier
+) = with(style) {
+    ConstraintLayout(modifier = modifier.padding(4.dp)) {
+        val (column, row) = createRefs()
+        Column(modifier = Modifier.constrainAs(column) {}) {
+            Box(contentAlignment = Alignment.BottomStart) {
+                AsyncImage(
+                    model = thumbnailURL,
+                    contentDescription = "상품 이미지"
+                )
+            }
+        }
+    }
 }

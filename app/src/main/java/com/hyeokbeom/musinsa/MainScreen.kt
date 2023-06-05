@@ -16,7 +16,6 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,11 +32,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
  */
 internal val LocalSectionProvider = staticCompositionLocalOf { SectionProvider() }
 
-internal class SectionProvider(val viewModel: MainViewModel? = null) {
+internal class SectionProvider(
+    val viewModel: MainViewModel? = null,
+) {
+    lateinit var contentType: ContentType
     var footerVisibilityState = MutableStateFlow(true)
 
     interface FooterClickListener {
-        fun onClick(type: String)
+        fun onClick()
     }
 
     lateinit var footerClickListener: FooterClickListener
@@ -56,11 +58,12 @@ fun MainScreen(list: List<Item>?) {
             modifier = Modifier.fillMaxSize(),
             state = scrollState
         ) {
-            items(list) {
-                val section = SectionProvider(hiltViewModel())
+            items(list) { item ->
+                val type = ContentType.values().find { it.name == item.contents.type } ?: throw Exception("Type Not Defined")
+                val section = SectionProvider(hiltViewModel()).apply { contentType = type }
 
                 CompositionLocalProvider(LocalSectionProvider provides section) {
-                    Section(it)
+                    Section(item)
                 }
             }
         }
@@ -146,7 +149,7 @@ private fun ContentsView(contents: Contents) {
         }
 
         ContentType.STYLE.name -> {
-            MusinsaStyleGrid2(contents.styles)
+            MusinsaStyleGrid(contents.styles)
         }
 
         ContentType.SCROLL.name -> {
@@ -175,7 +178,7 @@ private fun FooterView(footer: Footer) {
         ) {
             OutlinedButton(
                 onClick = {
-                    localSectionPreview.footerClickListener.onClick(footerType.name)
+                    localSectionPreview.footerClickListener.onClick()
                 },
                 modifier = Modifier.fillMaxWidth(0.94f),
                 border = BorderStroke(1.dp, Color.LightGray),
