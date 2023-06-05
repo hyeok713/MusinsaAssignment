@@ -8,8 +8,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import com.hyeokbeom.domain.model.Good
-import com.hyeokbeom.musinsa.LocalSectionProvider
-import com.hyeokbeom.musinsa.SectionProvider
+import com.hyeokbeom.musinsa.LocalSectionInfoProvider
+import com.hyeokbeom.musinsa.SectionInfoProvider
 
 /**
  * MusinsaStyleScroll
@@ -18,7 +18,7 @@ import com.hyeokbeom.musinsa.SectionProvider
 @Composable
 fun MusinsaStyleScroll(goods: List<Good>) {
     val scrollState = rememberScrollState()
-    val localSectionProvider = LocalSectionProvider.current
+    val localSectionInfo = LocalSectionInfoProvider.current
 
     var goodsToDraw by remember { mutableStateOf(goods) }
 
@@ -27,7 +27,7 @@ fun MusinsaStyleScroll(goods: List<Good>) {
         scrollState.animateScrollTo(0)
     }
 
-    localSectionProvider.footerClickListener = object : SectionProvider.FooterClickListener {
+    localSectionInfo.footerClickListener = object : SectionInfoProvider.FooterClickListener {
         override fun onClick() {
             goodsToDraw = goods.shuffled()
         }

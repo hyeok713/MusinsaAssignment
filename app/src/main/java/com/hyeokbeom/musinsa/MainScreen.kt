@@ -1,8 +1,10 @@
 package com.hyeokbeom.musinsa
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,7 +12,6 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,19 +29,30 @@ import kotlinx.coroutines.flow.MutableStateFlow
 /**
  * staticLocalComposition for Section
  */
-internal val LocalSectionProvider = staticCompositionLocalOf { SectionProvider() }
+internal val LocalSectionInfoProvider = staticCompositionLocalOf { SectionInfoProvider() }
 
-internal class SectionProvider(
+/**
+ * SectionInfoProvider
+ * [Section 정보 LocalCompositionProvider]
+ * @property viewModel
+ * @property lazyListState
+ */
+internal class SectionInfoProvider(
     val viewModel: MainViewModel? = null,
+    val lazyListState: LazyListState? = null
 ) {
     lateinit var contentType: ContentType
+    lateinit var footerClickListener: FooterClickListener
+
     var footerVisibilityState = MutableStateFlow(true)
 
+    /**
+     * FooterClickListener
+     * Section 내 Footer 의 클릭 이벤트 Interface
+     */
     interface FooterClickListener {
         fun onClick()
     }
-
-    lateinit var footerClickListener: FooterClickListener
 }
 
 /**
@@ -49,23 +61,28 @@ internal class SectionProvider(
  */
 @Composable
 fun MainScreen(list: List<Item>?) {
-    /* list != null 인 경우 뷰 구성 */
-    val scrollState = rememberLazyListState()
+    val lazyListState = rememberLazyListState()
     list?.let {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            state = scrollState,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+            state = lazyListState,
         ) {
             items(list) { item ->
                 val type = ContentType.values().find { it.name == item.contents.type }
                     ?: throw Exception("Type Not Defined")
-                val section = SectionProvider(hiltViewModel()).apply { contentType = type }
-                CompositionLocalProvider(LocalSectionProvider provides section) {
+                val section = SectionInfoProvider(
+                    viewModel = hiltViewModel(),
+                    lazyListState = lazyListState
+                ).apply { contentType = type }
+
+                CompositionLocalProvider(LocalSectionInfoProvider provides section) {
                     Section(item)
                 }
             }
         }
-    } ?: EmptyListScreen()
+    } ?: EmptyListScreen() /* 데이터 없는 경우 */
 }
 
 /**
@@ -133,24 +150,24 @@ private fun HeaderView(header: Header) = with(header) {
  * Contents
  * [Contents 뷰 영역]
  * @param contents
- * - contents type 값에 따라 뷰 분류
+ * - contentType 값에 따라 뷰 적용
  */
 @Composable
 private fun ContentsView(contents: Contents) {
-    when (contents.type) {
-        ContentType.BANNER.name -> {
+    when (LocalSectionInfoProvider.current.contentType) {
+        ContentType.BANNER -> {
             MusinsaStyleBanner(contents.banners)
         }
 
-        ContentType.GRID.name -> {
+        ContentType.GRID -> {
             MusinsaStyleGrid(contents.goods)
         }
 
-        ContentType.STYLE.name -> {
+        ContentType.STYLE -> {
             MusinsaStyleGrid(contents.styles)
         }
 
-        ContentType.SCROLL.name -> {
+        ContentType.SCROLL -> {
             MusinsaStyleScroll(contents.goods)
         }
     }
@@ -163,9 +180,10 @@ private fun ContentsView(contents: Contents) {
  */
 @Composable
 private fun FooterView(footer: Footer) {
+    val localSectionInfo = LocalSectionInfoProvider.current
+
     val footerType = FooterType.values().find { it.name == footer.type }
-    val localSectionPreview = LocalSectionProvider.current
-    val isFooterVisible: State<Boolean> = localSectionPreview.footerVisibilityState.collectAsState()
+    val isFooterVisible: State<Boolean> = localSectionInfo.footerVisibilityState.collectAsState()
 
     require(footerType != null)
 
@@ -176,9 +194,10 @@ private fun FooterView(footer: Footer) {
         ) {
             OutlinedButton(
                 onClick = {
-                    localSectionPreview.footerClickListener.onClick()
+                    /* local 로 전달 (listener callback in local) */
+                    localSectionInfo.footerClickListener.onClick()
                 },
-                modifier = Modifier.fillMaxWidth(0.94f),
+                modifier = Modifier.fillMaxWidth(0.90f),
                 border = BorderStroke(1.dp, Color.LightGray),
                 shape = RoundedCornerShape(50),
                 colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.LightGray)

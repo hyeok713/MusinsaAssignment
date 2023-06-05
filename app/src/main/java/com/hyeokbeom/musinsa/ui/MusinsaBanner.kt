@@ -26,7 +26,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /** CompositionLocal 기본값 정의 (static -> 뷰 구성후 변경되지 않음) **/
-val LocalBannerUiInfo = staticCompositionLocalOf { BannerUiInfo() }
+val LocalBannerUiInfoProvider = staticCompositionLocalOf { BannerUiInfoProvider() }
 
 private val currentBannerPage = MutableStateFlow(0)
 
@@ -41,13 +41,13 @@ private fun setCurrentPage(page: Int) {
  */
 @Composable
 fun MusinsaStyleBanner(banners: List<Banner>) {
-    val uiInfo = BannerUiInfo.create(
+    val uiInfo = BannerUiInfoProvider.create(
         screenWidthDp = LocalConfiguration.current.screenWidthDp.dp.value,
         itemWidthDp = LocalConfiguration.current.screenWidthDp.dp.value,
         parallaxOffsetFactor = .33f,
     )
 
-    CompositionLocalProvider(LocalBannerUiInfo provides uiInfo) {
+    CompositionLocalProvider(LocalBannerUiInfoProvider provides uiInfo) {
         val bannerSize = banners.size
         val numPages = Int.MAX_VALUE / bannerSize
         val startPage = numPages / 2
@@ -85,7 +85,15 @@ fun MusinsaStyleBanner(banners: List<Banner>) {
     }
 }
 
-data class BannerUiInfo(
+/**
+ * BannerUiInfo
+ * [Parallax Scroll Banner 구현을 위한  Ui 정보]
+ * @property itemWidthDp
+ * @property xForCenteredItemDp
+ * @property xForCenteredItemPx
+ * @property parallaxOffsetFactor
+ */
+data class BannerUiInfoProvider(
     val itemWidthDp: Float = 0f,
     val xForCenteredItemDp: Float = 0f,
     val xForCenteredItemPx: Float = 0f,
@@ -98,12 +106,13 @@ data class BannerUiInfo(
             screenWidthDp: Float,
             itemWidthDp: Float,
             parallaxOffsetFactor: Float,
-        ): BannerUiInfo {
+        ): BannerUiInfoProvider {
             val xForCenteredItemDp = (screenWidthDp - itemWidthDp) / 2
-            return BannerUiInfo(
+            val xForCenteredItemPx = xForCenteredItemDp * SCREEN_DENSITY
+            return BannerUiInfoProvider(
                 itemWidthDp = itemWidthDp,
                 xForCenteredItemDp = xForCenteredItemDp,
-                xForCenteredItemPx = xForCenteredItemDp * SCREEN_DENSITY,
+                xForCenteredItemPx = xForCenteredItemPx,
                 parallaxOffsetFactor = parallaxOffsetFactor,
             )
         }
@@ -117,7 +126,7 @@ data class BannerUiInfo(
  */
 @Composable
 fun BannerItem(banner: Banner) {
-    val bannerUiInfo = LocalBannerUiInfo.current
+    val bannerUiInfo = LocalBannerUiInfoProvider.current
     var itemX by remember { mutableStateOf(0f) }
 
     ConstraintLayout(modifier = Modifier.fillMaxWidth()) {

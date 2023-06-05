@@ -77,15 +77,9 @@ fun StyleView(
     @SuppressLint("ModifierParameter")
     modifier: Modifier = Modifier
 ) = with(style) {
-    ConstraintLayout(modifier = modifier.padding(4.dp)) {
-        val (column, row) = createRefs()
-        Column(modifier = Modifier.constrainAs(column) {}) {
-            Box(contentAlignment = Alignment.BottomStart) {
-                AsyncImage(
-                    model = thumbnailURL,
-                    contentDescription = "상품 이미지"
-                )
-            }
-        }
-    }
+    AsyncImage(
+        model = thumbnailURL,
+        modifier = modifier.padding(2.dp),
+        contentDescription = "상품 이미지"
+    )
 }
