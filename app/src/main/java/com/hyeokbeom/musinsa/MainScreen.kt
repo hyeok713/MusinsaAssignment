@@ -138,15 +138,7 @@ private fun HeaderView(header: Header) = with(header) {
 private fun ContentsView(contents: Contents) {
     when (contents.type) {
         ContentType.BANNER.name -> {
-            val uiInfo = BannerUiInfo.create(
-                screenWidthDp = LocalConfiguration.current.screenWidthDp.dp.value,
-                itemWidthDp = LocalConfiguration.current.screenWidthDp.dp.value,
-                parallaxOffsetFactor = .33f,
-            )
-
-            CompositionLocalProvider(LocalBannerUiInfo provides uiInfo) {
-                MusinsaStyleBanner(contents.banners)
-            }
+            MusinsaStyleBanner(contents.banners)
         }
 
         ContentType.GRID.name -> {
@@ -154,11 +146,11 @@ private fun ContentsView(contents: Contents) {
         }
 
         ContentType.STYLE.name -> {
-//            StylesContents(contents)
+            MusinsaStyleGrid2(contents.styles)
         }
 
         ContentType.SCROLL.name -> {
-//            ScrollContents(contents)
+            MusinsaStyleScroll(contents.goods)
         }
     }
 }
@@ -182,7 +174,9 @@ private fun FooterView(footer: Footer) {
             contentAlignment = Alignment.Center
         ) {
             OutlinedButton(
-                onClick = { localSectionPreview.footerClickListener.onClick(footerType.name) },
+                onClick = {
+                    localSectionPreview.footerClickListener.onClick(footerType.name)
+                },
                 modifier = Modifier.fillMaxWidth(0.94f),
                 border = BorderStroke(1.dp, Color.LightGray),
                 shape = RoundedCornerShape(50),

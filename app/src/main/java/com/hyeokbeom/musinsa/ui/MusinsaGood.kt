@@ -18,9 +18,9 @@ import com.hyeokbeom.shared.decimalFormat
  * [Grid Type 상품 뷰]
  */
 @Composable
-fun GridGoodItem(
+fun GoodView(
     good: Good = Good(),
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) = with(good) {
     ConstraintLayout(modifier = modifier.padding(4.dp)) {
         val (column, row) = createRefs()

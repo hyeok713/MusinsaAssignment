@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -23,6 +24,9 @@ import coil.compose.AsyncImage
 import com.hyeokbeom.domain.model.Banner
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+
+/** CompositionLocal 기본값 정의 (static -> 뷰 구성후 변경되지 않음) **/
+val LocalBannerUiInfo = staticCompositionLocalOf { BannerUiInfo() }
 
 private val currentBannerPage = MutableStateFlow(0)
 
@@ -37,39 +41,47 @@ private fun setCurrentPage(page: Int) {
  */
 @Composable
 fun MusinsaStyleBanner(banners: List<Banner>) {
-    val bannerSize = banners.size
-    val numPages = Int.MAX_VALUE / bannerSize
-    val startPage = numPages / 2
-    val startIndex = (startPage * bannerSize) + 0
+    val uiInfo = BannerUiInfo.create(
+        screenWidthDp = LocalConfiguration.current.screenWidthDp.dp.value,
+        itemWidthDp = LocalConfiguration.current.screenWidthDp.dp.value,
+        parallaxOffsetFactor = .33f,
+    )
 
-    val pagerState = rememberPagerState(initialPage = startIndex)
+    CompositionLocalProvider(LocalBannerUiInfo provides uiInfo) {
+        val bannerSize = banners.size
+        val numPages = Int.MAX_VALUE / bannerSize
+        val startPage = numPages / 2
+        val startIndex = (startPage * bannerSize) + 0
 
-    /* currentBannerPage 상태값 변경시 3초 후 페이지 스크롤 */
-    LaunchedEffect(key1 = currentBannerPage.collectAsState().value) {
-        delay(3000)
-        pagerState.animateScrollToPage(page = pagerState.currentPage.inc())
-    }
+        val pagerState = rememberPagerState(initialPage = startIndex)
 
-    Box {
-        HorizontalPager(
-            pageCount = Int.MAX_VALUE,
-            modifier = Modifier.fillMaxWidth(),
-            state = pagerState,
-        ) { index ->
-            val pageIndex = (index - startIndex).floorMod(bannerSize)
-
-            with(banners[pageIndex]) {
-                /** Banner **/
-                BannerItem(this)
-                /* 페이지 인덱스 상태값 변경 */
-                setCurrentPage(pagerState.settledPage)
-            }
+        /* currentBannerPage 상태값 변경시 3초 후 페이지 스크롤 */
+        LaunchedEffect(key1 = currentBannerPage.collectAsState().value) {
+            delay(3000)
+            pagerState.animateScrollToPage(page = pagerState.currentPage.inc())
         }
 
-        BannerPagerIndicator(
-            modifier = Modifier.align(Alignment.BottomEnd),
-            size = bannerSize,
-        )
+        Box {
+            HorizontalPager(
+                pageCount = Int.MAX_VALUE,
+                modifier = Modifier.fillMaxWidth(),
+                state = pagerState,
+            ) { index ->
+                val pageIndex = (index - startIndex).floorMod(bannerSize)
+
+                with(banners[pageIndex]) {
+                    /** Banner **/
+                    BannerItem(this)
+                    /* 페이지 인덱스 상태값 변경 */
+                    setCurrentPage(pagerState.settledPage)
+                }
+            }
+
+            BannerPagerIndicator(
+                modifier = Modifier.align(Alignment.BottomEnd),
+                size = bannerSize,
+            )
+        }
     }
 }
 
@@ -97,9 +109,6 @@ data class BannerUiInfo(
         }
     }
 }
-
-/** CompositionLocal 기본값 정의 (static -> 뷰 구성후 변경되지 않음) **/
-val LocalBannerUiInfo = staticCompositionLocalOf { BannerUiInfo() }
 
 /**
  * BannerItem
