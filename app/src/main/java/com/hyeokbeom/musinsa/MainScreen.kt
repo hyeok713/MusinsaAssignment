@@ -120,49 +120,18 @@ private fun ContentsView(contents: Contents) {
         }
 
         ContentType.GRID.name -> {
-            MusinsaStyleGrid(contents.goods) 
+            MusinsaStyleGrid(contents.goods)
         }
 
         ContentType.STYLE.name -> {
-            StylesContents(contents)
+//            StylesContents(contents)
         }
 
         ContentType.SCROLL.name -> {
-            ScrollContents(contents)
+//            ScrollContents(contents)
         }
     }
 }
-
-/**
- * GridContents
- * [Grid 컨텐츠 뷰]
- * @param contents
- */
-@Composable
-private fun GridContents(contents: Contents) = with(contents) {
-
-}
-
-/**
- * StylesContents
- * [Style 컨텐츠 뷰]
- * @param contents
- */
-@Composable
-private fun StylesContents(contents: Contents) = with(contents) {
-
-}
-
-/**
- * ScrollContents
- * [Scroll 컨텐츠 뷰]
- * @param contents
- */
-@Composable
-private fun ScrollContents(contents: Contents) = with(contents) {
-
-}
-
 
 /**
  * Footer
