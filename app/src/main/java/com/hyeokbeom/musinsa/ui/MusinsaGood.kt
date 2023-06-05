@@ -3,9 +3,13 @@ package com.hyeokbeom.musinsa.ui
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -71,15 +75,35 @@ private fun Coupon() {
 }
 
 
+/**
+ * StyleView
+ * [Style type Grid 뷰]
+ * @param style item
+ * @param modifier for using weight from outer tree
+ * @param isLastRow
+ * @param isStartColumn
+ * @param isLastColumn
+ * - 마지막 Row 의 첫, 마지막 Column 에 대하여 둥근 모서리 설정
+ */
 @Composable
 fun StyleView(
     style: Style,
     @SuppressLint("ModifierParameter")
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isLastColumn:Boolean,
+    isStartRow: Boolean,
+    isLastRow: Boolean
 ) = with(style) {
-    AsyncImage(
-        model = thumbnailURL,
-        modifier = modifier.padding(2.dp),
-        contentDescription = "상품 이미지"
-    )
+    val shape: Shape = when {
+        (isStartRow && isLastColumn) -> RoundedCornerShape(bottomStart = 6.dp)
+        (isLastRow && isLastColumn) -> RoundedCornerShape(bottomEnd = 6.dp)
+        else -> RectangleShape
+    }
+    Box(modifier = modifier.padding(2.dp)) {
+        AsyncImage(
+            model = thumbnailURL,
+            modifier = Modifier.clip(shape),
+            contentDescription = "상품 이미지"
+        )
+    }
 }

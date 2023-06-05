@@ -1,10 +1,12 @@
 package com.hyeokbeom.musinsa.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
@@ -19,9 +21,9 @@ import com.hyeokbeom.musinsa.SectionInfoProvider
 /**
  * MusinsaStyleGrid
  * [3x2 Grid 뷰 Column part]
- * ㅁ ->
- * ㅁ ->
- * ㅁ ->
+ * A ->
+ * B ->
+ * C ->
  * - 버튼 클릭 이벤트 callback -> 아이템 추가
  * - 리스트 검색 후 버튼 state 변경
  */
@@ -59,13 +61,14 @@ fun <T> MusinsaStyleGrid(goods: List<T>) {
 
     Column(modifier = Modifier.padding(start = 6.dp, end = 6.dp)) {
         repeat(currentColumnSize) {
+            val isLast = it == currentColumnSize - 1
             /**
              *  STYLE 컨텐츠, 첫번쨰 아이템 별도 처리
              */
             if (it == 0 && contentType == ContentType.STYLE) {
                 SpannedStyleView(styles = rows[it] as List<Style>)
             } else {
-                GridGoodRow(rows[it], rowSize)
+                GridGoodRow(rows[it], rowSize, isLast)
             }
         }
     }
@@ -75,6 +78,8 @@ fun <T> MusinsaStyleGrid(goods: List<T>) {
  * SpannedStyleView
  * [Style 첫번째 열 뷰]
  * @param styles
+ * AA  B
+ * AA  C
  * - 첫번째 아이템의 영역 설정시 얻어진 height 값을 통해 나머지 아이템의 height 값 설정
  * -> 동적 이미지 설정을 위함임
  */
@@ -89,6 +94,7 @@ private fun SpannedStyleView(styles: List<Style>) {
             model = firstRow.thumbnailURL,
             modifier = Modifier
                 .padding(2.dp)
+                .clip(RoundedCornerShape(topStart = 6.dp))
                 .weight(2f)                   // 스크린 대비 영역 비율
                 .aspectRatio(1 / 1.5f)  // width / height 비율 설정 (1:1.5)
                 .onGloballyPositioned {
@@ -116,6 +122,7 @@ private fun SpannedStyleView(styles: List<Style>) {
                     Modifier
                         .height(heightDp)
                         .padding(bottom = 2.dp)
+                        .clip(RoundedCornerShape(topEnd = 6.dp))
                 }
 
                 AsyncImage(
@@ -132,20 +139,25 @@ private fun SpannedStyleView(styles: List<Style>) {
 /**
  * GridGoodRow
  * [3x2 Grid 뷰 Row part]
- * ㅁ ㅁ ㅁ
- * -
+ * @param list
+ * @param count column count from style
+ * @param isLastColumn 마지막 열 여부
+ * A B C
  */
 @Composable
-private fun <T> GridGoodRow(list: List<T>, column: Int) {
+private fun <T> GridGoodRow(list: List<T>, count: Int, isLastColumn: Boolean) {
     val localSectionInfo = LocalSectionInfoProvider.current
     val contentType = localSectionInfo.contentType
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        repeat(column) { x ->
+        repeat(count) { x -> /* 3번씩 반복 */
+            val isStartRow = x == 0
+            val isLastRow = x == count - 1
+
             /**
-             * 마지막 열의 데이터가 불충분(3개 미만) 인 경우, Default Item 으로 구성
+             * 마지막 열의 데이터가 불충분(3개 미만) 인 경우, Default Item(Spacer) 으로 구성
              */
             if (list.size - 1 > x - 1) {
                 when (contentType) {
@@ -153,86 +165,19 @@ private fun <T> GridGoodRow(list: List<T>, column: Int) {
                         good = list[x] as Good,
                         modifier = Modifier.weight(1f)
                     )
-                    ContentType.STYLE -> StyleView(
-                        style = list[x] as Style,
-                        modifier = Modifier.weight(1f)
-                    )
+                    ContentType.STYLE -> {
+                        StyleView(
+                            style = list[x] as Style,
+                            modifier = Modifier.weight(1f),
+                            isLastColumn = isLastColumn,
+                            isStartRow = isStartRow,
+                            isLastRow = isLastRow
+                        )
+                    }
                     else -> throw Exception()
                 }
             } else {
                 Spacer(modifier = Modifier.weight(1f))
-            }
-        }
-    }
-}
-
-/**
- * MusinsaStyleGrid2
- * [Grid style for type "STYLE"]
- */
-@Composable
-fun MusinsaStyleGrid2(styles: List<Style>) {
-    val rows: List<List<Style>> = styles.chunked(ContentType.STYLE.row)
-
-    Column {
-        /* 첫번째 열 별도 구성 */
-        Row(Modifier.fillMaxWidth()) {
-            val firstRow = rows.first()
-
-            if (firstRow.size >= 2) {
-                /* 첫번째 열 첫번째 아이템 */
-                Box(
-                    modifier = Modifier
-                        .weight(2f)
-                        .aspectRatio(1f)
-                        .padding(4.dp)
-                ) {
-                    AsyncImage(
-                        model = firstRow.first().thumbnailURL,
-                        contentDescription = "2x2 Style 이미지",
-                    )
-                }
-            } else {
-                Spacer(
-                    modifier = Modifier
-                        .weight(2f)
-                        .fillMaxHeight()
-                )
-            }
-
-            /* 첫번쨰 열 나머지 아이템 구성 */
-            Column(modifier = Modifier.weight(1f)) {
-                firstRow.subList(1, firstRow.size).forEach { item ->
-                    Box(
-                        modifier = Modifier
-                            .aspectRatio(1f)
-                            .padding(4.dp)
-                    ) {
-                        AsyncImage(
-                            model = firstRow.first().thumbnailURL,
-                            contentDescription = "Style 이미지",
-                        )
-                    }
-                }
-            }
-        }
-
-        /* 나머지 열 */
-        rows.subList(1, rows.size).forEach { rowItems ->
-            Row(Modifier.fillMaxWidth()) {
-                rowItems.forEach { item ->
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .aspectRatio(1f)
-                            .padding(4.dp)
-                    ) {
-                        AsyncImage(
-                            model = item.thumbnailURL,
-                            contentDescription = "Style 이미지",
-                        )
-                    }
-                }
             }
         }
     }
