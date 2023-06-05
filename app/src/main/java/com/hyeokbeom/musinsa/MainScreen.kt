@@ -9,10 +9,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,7 +26,7 @@ import com.hyeokbeom.musinsa.ui.*
 import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
- * LocalComposition for Section
+ * staticLocalComposition for Section
  */
 internal val LocalSectionProvider = staticCompositionLocalOf { SectionProvider() }
 
@@ -56,12 +54,12 @@ fun MainScreen(list: List<Item>?) {
     list?.let {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            state = scrollState
+            state = scrollState,
         ) {
             items(list) { item ->
-                val type = ContentType.values().find { it.name == item.contents.type } ?: throw Exception("Type Not Defined")
+                val type = ContentType.values().find { it.name == item.contents.type }
+                    ?: throw Exception("Type Not Defined")
                 val section = SectionProvider(hiltViewModel()).apply { contentType = type }
-
                 CompositionLocalProvider(LocalSectionProvider provides section) {
                     Section(item)
                 }
@@ -167,7 +165,7 @@ private fun ContentsView(contents: Contents) {
 private fun FooterView(footer: Footer) {
     val footerType = FooterType.values().find { it.name == footer.type }
     val localSectionPreview = LocalSectionProvider.current
-    val isFooterVisible = localSectionPreview.footerVisibilityState.collectAsState()
+    val isFooterVisible: State<Boolean> = localSectionPreview.footerVisibilityState.collectAsState()
 
     require(footerType != null)
 

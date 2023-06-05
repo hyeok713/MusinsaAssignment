@@ -2,6 +2,7 @@ package com.hyeokbeom.musinsa.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -19,11 +20,16 @@ import com.hyeokbeom.musinsa.SectionProvider
 fun <T> MusinsaStyleGrid(goods: List<T>) {
     val localSectionProvider = LocalSectionProvider.current
     val rowSize = localSectionProvider.contentType.row
-    var currentColumnSize by remember { mutableStateOf(2) }
+
+    var currentColumnSize by rememberSaveable { mutableStateOf(2) }
+    var isFooterVisible by rememberSaveable { mutableStateOf(true) }
 
     val rows: List<List<T>> = goods.chunked(rowSize)    // 3x2 array
-
     val additionalGoods: MutableState<List<T>> = remember { mutableStateOf(listOf()) }
+
+    LaunchedEffect(key1 = isFooterVisible) {
+        localSectionProvider.footerVisibilityState.value = isFooterVisible
+    }
 
     localSectionProvider.footerClickListener = object : SectionProvider.FooterClickListener {
         override fun onClick() {
@@ -36,8 +42,9 @@ fun <T> MusinsaStyleGrid(goods: List<T>) {
                 /* set result list */
                 additionalGoods.value = result.first
                 /* set footer visible state in case of lastIndex */
+
                 takeIf { result.second }?.let {
-                    localSectionProvider.footerVisibilityState.value = false
+                    isFooterVisible = false
                 }
             }
 
