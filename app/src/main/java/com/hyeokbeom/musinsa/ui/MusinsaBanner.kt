@@ -25,8 +25,10 @@ import com.hyeokbeom.domain.model.Banner
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 
-/** CompositionLocal 기본값 정의 (static -> 뷰 구성후 변경되지 않음) **/
-val LocalBannerUiInfoProvider = staticCompositionLocalOf { BannerUiInfoProvider() }
+/**
+ * staticLocalComposition for Banner
+ */
+private val LocalBannerUiInfoProvider = staticCompositionLocalOf { BannerUiInfoProvider() }
 
 private val currentBannerPage = MutableStateFlow(0)
 
@@ -44,7 +46,7 @@ fun MusinsaStyleBanner(banners: List<Banner>) {
     val uiInfo = BannerUiInfoProvider.create(
         screenWidthDp = LocalConfiguration.current.screenWidthDp.dp.value,
         itemWidthDp = LocalConfiguration.current.screenWidthDp.dp.value,
-        parallaxOffsetFactor = .33f,
+        parallaxOffsetFactor = .66f,
     )
 
     CompositionLocalProvider(LocalBannerUiInfoProvider provides uiInfo) {
@@ -54,10 +56,11 @@ fun MusinsaStyleBanner(banners: List<Banner>) {
         val startIndex = (startPage * bannerSize) + 0
 
         val pagerState = rememberPagerState(initialPage = startIndex)
+        val scrollDelayTimeMillis = 3000L
 
-        /* currentBannerPage 상태값 변경시 3초 후 페이지 스크롤 */
+        /* currentBannerPage 상태값 변경시 페이지 스크롤 */
         LaunchedEffect(key1 = currentBannerPage.collectAsState().value) {
-            delay(3000)
+            delay(scrollDelayTimeMillis)
             pagerState.animateScrollToPage(page = pagerState.currentPage.inc())
         }
 
@@ -68,7 +71,6 @@ fun MusinsaStyleBanner(banners: List<Banner>) {
                 state = pagerState,
             ) { index ->
                 val pageIndex = (index - startIndex).floorMod(bannerSize)
-
                 with(banners[pageIndex]) {
                     /** Banner **/
                     BannerItem(this)
@@ -88,10 +90,11 @@ fun MusinsaStyleBanner(banners: List<Banner>) {
 /**
  * BannerUiInfo
  * [Parallax Scroll Banner 구현을 위한  Ui 정보]
- * @property itemWidthDp
- * @property xForCenteredItemDp
- * @property xForCenteredItemPx
- * @property parallaxOffsetFactor
+ * @property itemWidthDp 배너 뷰 크기
+ * @property xForCenteredItemDp 화면상 배너의 중간값
+ * @property xForCenteredItemPx  xForCenteredItemDp to Pixel
+ * @property parallaxOffsetFactor offset velocity 증/감 parameter
+ * - parallaxOffsetFactor 설정값 -> 기본 속도 대비 설정값 만큼 빠르게 이동
  */
 data class BannerUiInfoProvider(
     val itemWidthDp: Float = 0f,
@@ -123,6 +126,7 @@ data class BannerUiInfoProvider(
  * BannerItem
  * [배너 뷰]
  * @param banner
+ *
  */
 @Composable
 fun BannerItem(banner: Banner) {
@@ -139,6 +143,7 @@ fun BannerItem(banner: Banner) {
             modifier = Modifier
                 .fillMaxWidth()
                 .onGloballyPositioned { itemX = it.positionInWindow().x }
+                .offset { IntOffset(x = if (itemX > 0f) 0 else -itemX.toInt(), y = 0) }
         )
 
         val offsetFromCenterPx = itemX - bannerUiInfo.xForCenteredItemPx
@@ -171,6 +176,7 @@ fun BannerItem(banner: Banner) {
                 }
                 .offset {
                     IntOffset(
+                        /* 위 텍스트 대비 절반 속도 */
                         x = ((offsetFromCenterPx
                                 * bannerUiInfo.parallaxOffsetFactor).toInt() / 2), y = -170
                     )
@@ -187,10 +193,7 @@ fun BannerItem(banner: Banner) {
  * - 현재 구간 표시
  */
 @Composable
-private fun BannerPagerIndicator(
-    modifier: Modifier = Modifier,
-    size: Int,
-) {
+private fun BannerPagerIndicator(modifier: Modifier = Modifier, size: Int) {
     val currentPage = currentBannerPage.collectAsState().value.floorMod(size)
 
     Box(
