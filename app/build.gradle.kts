@@ -61,11 +61,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 
-
     // Google
     implementation("com.google.android.material:material:1.9.0")
-    implementation("com.google.accompanist:accompanist-pager:0.28.0")
-    implementation("com.google.accompanist:accompanist-insets:0.30.0")
     implementation("com.google.code.gson:gson:2.9.0")
 
     // Kotlin
@@ -100,8 +97,4 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:3.14.9")
-
-    implementation("dev.chrisbanes.snapper:snapper:0.2.2")
-
-
 }
