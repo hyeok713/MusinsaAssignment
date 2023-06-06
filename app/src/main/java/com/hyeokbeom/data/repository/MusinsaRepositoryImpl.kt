@@ -7,5 +7,5 @@ import javax.inject.Inject
 class MusinsaRepositoryImpl @Inject constructor(
     private val api: MusinsaAPI,
 ) : MusinsaRepository {
-    override suspend fun interview() = api.interview()
+    override suspend fun mainList() = api.mainList()
 }

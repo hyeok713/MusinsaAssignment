@@ -2,7 +2,7 @@ package com.hyeokbeom.musinsa
 
 import androidx.lifecycle.ViewModel
 import com.hyeokbeom.domain.model.Item
-import com.hyeokbeom.domain.usecase.InterviewUseCase
+import com.hyeokbeom.domain.usecase.MainListUseCase
 import com.hyeokbeom.shared.executeResult
 import com.hyeokbeom.shared.launchOnIO
 
@@ -12,12 +12,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val interviewUseCase: InterviewUseCase
+    internal val mockMainListUseCase: MainListUseCase
 ) : ViewModel() {
     val item = MutableStateFlow<List<Item>?>(emptyList())
-
+    val a = 2
     init {
-        fetchData()
+        launchOnIO { fetchData() }
     }
 
     /**
@@ -26,12 +26,11 @@ class MainViewModel @Inject constructor(
      * - Response Success 인 경우 list data 전달
      * - Response Failure 인 경우 null 전달
      */
-    private fun fetchData() = launchOnIO {
-        interviewUseCase().executeResult(
-            onSuccess = { item.value = it.list },
-            onFailure = { item.value = null }
-        )
-    }
+    internal suspend fun fetchData() = mockMainListUseCase().executeResult(
+        onSuccess = { item.value = it.list },
+        onFailure = { item.value = null }
+    )
+
 
     /**
      * getListState
@@ -41,7 +40,9 @@ class MainViewModel @Inject constructor(
      * - 기준 리스트 대비 현재 인덱스의 리스트 상태값 확인
      */
 
-    fun getListState(lastIndex: Int, currentIndex: Int): ListState {
+    internal fun getListState(lastIndex: Int, currentIndex: Int): ListState {
+        println("lastIndex: $lastIndex")
+        println("currentIndex: $currentIndex")
         return when {
             lastIndex == currentIndex -> ListState.Last
             lastIndex < currentIndex -> ListState.Over

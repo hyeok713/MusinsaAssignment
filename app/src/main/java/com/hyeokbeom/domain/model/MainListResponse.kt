@@ -2,6 +2,6 @@ package com.hyeokbeom.domain.model
 
 import com.google.gson.annotations.SerializedName
 
-data class InterviewResponse(
+data class MainListResponse(
     @SerializedName("data") val list: List<Item>
 )

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.fir.expressions.builder.buildArgumentList
+
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -27,7 +29,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     kapt {
@@ -45,6 +50,8 @@ android {
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.3.2"
+        val deprecatedFlag = listOf("-Xlint:deprecation")
+        buildArgumentList { deprecatedFlag }
     }
     packagingOptions {
         resources {
@@ -77,7 +84,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling:1.4.3")
     implementation("androidx.compose.material:material:1.4.3")
     implementation("androidx.compose.ui:ui-util:1.4.3")
-    implementation("androidx.compose.foundation:foundation:1.4.0")
+    implementation("androidx.compose.foundation:foundation:1.4.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
@@ -87,9 +94,6 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
 
-    // UnitTest
-    testImplementation("junit:junit:4.12")
-
     // Coil
     implementation("io.coil-kt:coil-compose:2.2.2")
 
@@ -97,4 +101,8 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:3.14.9")
+
+    testImplementation ("junit:junit:4.13.2")
+    androidTestImplementation("org.mockito:mockito-android:2.24.5")
+    testImplementation("org.mockito:mockito-inline:2.21.0")
 }

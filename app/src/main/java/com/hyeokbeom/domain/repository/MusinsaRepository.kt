@@ -1,7 +1,7 @@
 package com.hyeokbeom.domain.repository
 
-import com.hyeokbeom.domain.model.InterviewResponse
+import com.hyeokbeom.domain.model.MainListResponse
 
 interface MusinsaRepository {
-    suspend fun interview(): InterviewResponse
+    suspend fun mainList(): MainListResponse
 }
