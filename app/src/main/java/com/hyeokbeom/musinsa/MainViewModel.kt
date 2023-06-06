@@ -34,13 +34,29 @@ class MainViewModel @Inject constructor(
     }
 
     /**
-     * getAdditionalList
-     * [컨텐츠 1열 추가 정보 확인]
-     * @param list 총 컨텐츠
-     * @param currentIndex 표시되고 있는 마지막 열의 인덱스
-     * - also check if next list exist
+     * getListState
+     * [ListState 확인]
+     * @param lastIndex
+     * @param currentIndex
+     * - 기준 리스트 대비 현재 인덱스의 리스트 상태값 확인
      */
-    fun <T : Any> getAdditionalList(list: List<T>, currentIndex: Int): Boolean {
-        return list.lastIndex == currentIndex + 1
+
+    fun getListState(lastIndex: Int, currentIndex: Int): ListState {
+        return when {
+            lastIndex == currentIndex -> ListState.Last
+            lastIndex < currentIndex -> ListState.Over
+            else -> ListState.In
+        }
     }
+}
+
+/**
+ * ListState
+ * 특정 아이템 혹은 인덱스 검색 결과 상태값
+ *
+ */
+sealed class ListState {
+    object Last: ListState()    /* 검색 값이 배열의 LastIndex */
+    object In: ListState()      /* 검색 값이 마지막 이내 값 */
+    object Over: ListState()    /* 검색 값이 OutOfBound */
 }
