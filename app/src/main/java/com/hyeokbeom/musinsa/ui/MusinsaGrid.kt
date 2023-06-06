@@ -15,6 +15,7 @@ import coil.compose.AsyncImage
 import com.hyeokbeom.domain.model.Good
 import com.hyeokbeom.domain.model.Style
 import com.hyeokbeom.musinsa.ContentType
+import com.hyeokbeom.musinsa.ListState
 import com.hyeokbeom.musinsa.LocalSectionInfoProvider
 import com.hyeokbeom.musinsa.SectionInfoProvider
 
@@ -30,8 +31,10 @@ import com.hyeokbeom.musinsa.SectionInfoProvider
 @Composable
 fun <T> MusinsaStyleGrid(goods: List<T>) {
     val localSectionInfo = LocalSectionInfoProvider.current
-    val rowSize = localSectionInfo.contentType.row
+    val viewModel = localSectionInfo.viewModel
     val contentType = localSectionInfo.contentType
+
+    val rowSize = contentType.rowSize
 
     var currentColumnSize by rememberSaveable { mutableStateOf(2) }
     var isFooterVisible by rememberSaveable { mutableStateOf(true) }
@@ -45,17 +48,13 @@ fun <T> MusinsaStyleGrid(goods: List<T>) {
     /* FooterClickListener 등록 */
     localSectionInfo.footerClickListener = object : SectionInfoProvider.FooterClickListener {
         override fun onClick() {
-            /**
-             * 버튼 클릭 이벤트 발생시 다음 아이템 검색
-             */
-            localSectionInfo.viewModel?.getAdditionalList(
-                rows, currentColumnSize - 1
-            )?.let { result ->
-                /* 마지막 인덱스인 경우 Footer 상태 변경 */
-                if (result) isFooterVisible = false
+            viewModel?.getListState(rows.lastIndex, currentColumnSize)?.let {
+                when (it) {
+                    ListState.In -> currentColumnSize++
+                    ListState.Last -> run { isFooterVisible = false }.also { currentColumnSize++ }
+                    ListState.Over -> isFooterVisible = false
+                }
             }
-
-            currentColumnSize++
         }
     }
 
@@ -81,7 +80,6 @@ fun <T> MusinsaStyleGrid(goods: List<T>) {
  * AA  B
  * AA  C
  * - 첫번째 아이템의 영역 설정시 얻어진 height 값을 통해 나머지 아이템의 height 값 설정
- * -> 동적 이미지 설정을 위함임
  */
 @Composable
 private fun SpannedStyleView(styles: List<Style>) {
@@ -108,7 +106,7 @@ private fun SpannedStyleView(styles: List<Style>) {
             modifier = Modifier
                 .weight(1f)
                 .padding(2.dp)
-                .height(positionedHeight.dp),   // 해당 뷰가 그려진 후 얻어진 값으로 height 설정
+                .height(positionedHeight.dp),   // 첫번째 이미지 그려진 후 얻어진 값으로 height 설정
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween
         ) {

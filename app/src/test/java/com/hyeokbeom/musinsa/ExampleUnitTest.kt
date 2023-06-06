@@ -12,7 +12,8 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        val lastIndex = 3
-        print(lastIndex + 3)
+        val lastIndex = .5f * 1f
+        val lastIndex2 = 0.5f * 1f
+        println("$lastIndex $lastIndex2")
     }
 }

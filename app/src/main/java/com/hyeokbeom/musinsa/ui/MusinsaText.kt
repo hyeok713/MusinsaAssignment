@@ -27,11 +27,9 @@ enum class MusinsaTextStyle(
     BrandName(11, Color.Gray),
     Price12(12, Color.Black),
     SaleRate12(12, Color.Red, FontWeight(450)),
-    Banner(32, Color.White),
     BannerTitle(16, Color.White, FontWeight.Bold),
     BannerDescription(12, Color.White),
     BannerIndicator(10, Color.White),
-    Indicator(14, Color.White),
     FooterRefresh(10, Color.Black, FontWeight.SemiBold, type = "REFRESH"),
     FooterMore(10, Color.Black, FontWeight.SemiBold, type = "MORE"),
     Coupon(10, Color.White, FontWeight.Light)

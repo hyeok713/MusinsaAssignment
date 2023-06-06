@@ -24,11 +24,8 @@ import com.hyeokbeom.shared.decimalFormat
  * [Grid Type 상품 뷰]
  */
 @Composable
-fun GoodView(
-    good: Good = Good(),
-    @SuppressLint("ModifierParameter")
-    modifier: Modifier = Modifier
-) = with(good) {
+@SuppressLint("ModifierParameter")
+fun GoodView(good: Good = Good(),  modifier: Modifier = Modifier) = with(good) {
     ConstraintLayout(modifier = modifier.padding(4.dp)) {
         val (column, row) = createRefs()
         Column(modifier = Modifier.constrainAs(column) {}) {
@@ -42,7 +39,10 @@ fun GoodView(
 
             }
 
-            MusinsaStyleText(text = brandName, style = MusinsaTextStyle.BrandName)
+            MusinsaStyleText(
+                text = brandName,
+                style = MusinsaTextStyle.BrandName,
+                modifier = Modifier.padding(top = 6.dp))
         }
 
         Row(
@@ -80,15 +80,15 @@ private fun Coupon() {
  * [Style type Grid 뷰]
  * @param style item
  * @param modifier for using weight from outer tree
- * @param isLastRow
- * @param isStartColumn
  * @param isLastColumn
+ * @param isStartRow
+ * @param isLastRow
  * - 마지막 Row 의 첫, 마지막 Column 에 대하여 둥근 모서리 설정
  */
 @Composable
+@SuppressLint("ModifierParameter")
 fun StyleView(
     style: Style,
-    @SuppressLint("ModifierParameter")
     modifier: Modifier = Modifier,
     isLastColumn:Boolean,
     isStartRow: Boolean,

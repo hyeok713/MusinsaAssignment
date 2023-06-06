@@ -87,20 +87,20 @@ fun MainScreen(list: List<Item>?) {
 
 /**
  * Section
- * [list data 의 한 '구간' 을 나타 내는 단위]
- * @param item an item of list
- * - header, footer could be 'null'
+ * [list data 의 한 '구간' 을 나타 내는 뷰]
+ * @param item
+ * - header, footer Optional
  */
 @Composable
 private fun Section(item: Item) = with(item) {
     Column {
-        /* HEADER */
+        /** HEADER **/
         header?.let { HeaderView(it) }
 
-        /* CONTENTS */
+        /** CONTENTS **/
         ContentsView(item.contents)
 
-        /* FOOTER */
+        /** FOOTER **/
         footer?.let { FooterView(it) }
     }
 }
@@ -109,7 +109,7 @@ private fun Section(item: Item) = with(item) {
  * Header
  * [Header 뷰 영역]
  * @param header
- * - iconURL, linkURL could be 'null'
+ * - iconURL, linkURL Optional
  */
 @Composable
 private fun HeaderView(header: Header) = with(header) {
@@ -155,21 +155,10 @@ private fun HeaderView(header: Header) = with(header) {
 @Composable
 private fun ContentsView(contents: Contents) {
     when (LocalSectionInfoProvider.current.contentType) {
-        ContentType.BANNER -> {
-            MusinsaStyleBanner(contents.banners)
-        }
-
-        ContentType.GRID -> {
-            MusinsaStyleGrid(contents.goods)
-        }
-
-        ContentType.STYLE -> {
-            MusinsaStyleGrid(contents.styles)
-        }
-
-        ContentType.SCROLL -> {
-            MusinsaStyleScroll(contents.goods)
-        }
+        ContentType.BANNER -> MusinsaStyleBanner(contents.banners)
+        ContentType.GRID -> MusinsaStyleGrid(contents.goods)
+        ContentType.STYLE -> MusinsaStyleGrid(contents.styles)
+        ContentType.SCROLL -> MusinsaStyleScroll(contents.goods)
     }
 }
 
