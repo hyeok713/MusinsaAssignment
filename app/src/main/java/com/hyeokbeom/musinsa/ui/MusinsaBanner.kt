@@ -73,13 +73,14 @@ fun MusinsaStyleBanner(banners: List<Banner>) {
                 val pageIndex = (index - startIndex).floorMod(bannerSize)
                 with(banners[pageIndex]) {
                     /** Banner **/
-                    BannerItem(this)
+                    BannerPage(this)
                     /* 페이지 인덱스 상태값 변경 */
                     setCurrentPage(pagerState.settledPage)
                 }
             }
 
-            BannerPagerIndicator(
+            /** Indicator **/
+            BannerPageIndicator(
                 modifier = Modifier.align(Alignment.BottomEnd),
                 size = bannerSize,
             )
@@ -129,7 +130,7 @@ data class BannerUiInfoProvider(
  *
  */
 @Composable
-fun BannerItem(banner: Banner) {
+fun BannerPage(banner: Banner) {
     val bannerUiInfo = LocalBannerUiInfoProvider.current
     var itemX by remember { mutableStateOf(0f) }
 
@@ -193,7 +194,7 @@ fun BannerItem(banner: Banner) {
  * - 현재 구간 표시
  */
 @Composable
-private fun BannerPagerIndicator(modifier: Modifier = Modifier, size: Int) {
+private fun BannerPageIndicator(modifier: Modifier = Modifier, size: Int) {
     val currentPage = currentBannerPage.collectAsState().value.floorMod(size)
 
     Box(
