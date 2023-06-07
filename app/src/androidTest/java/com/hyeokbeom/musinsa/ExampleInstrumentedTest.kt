@@ -52,10 +52,9 @@ class StyleViewTest {
             else -> asyncImageBounds
         }
 
-        assertNotEquals(isStartRow, isLastRow)                 // 해당 값은 동일하지 않아야 함
-        assertNotEquals(
-            asyncImageBounds,
-            expectedClipBounds
-        )  // clip 이 적용된 경우, Rect 의 정보가 달라야 함 (origin / copied)
+        /* 해당 값은 동일하지 않아야 함 */
+        assertNotEquals(isStartRow, isLastRow)
+        /* clip 이 적용된 경우, Rect 의 정보가 달라야 함 (origin / copied) */
+        assertNotEquals(asyncImageBounds, expectedClipBounds)
     }
 }
