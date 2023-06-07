@@ -67,6 +67,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1")
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation("androidx.activity:activity-compose:1.7.2")
 
     // Google
     implementation("com.google.android.material:material:1.9.0")
@@ -86,12 +87,15 @@ dependencies {
     implementation("androidx.compose.material:material:1.4.3")
     implementation("androidx.compose.ui:ui-util:1.4.3")
     implementation("androidx.compose.foundation:foundation:1.4.3")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.4.3")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.4.3")
+
+    // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation("androidx.activity:activity-compose:1.7.2")
 
     // Hilt
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("com.google.dagger:hilt-android:2.44")
     kapt("com.google.dagger:hilt-android-compiler:2.44")
 
