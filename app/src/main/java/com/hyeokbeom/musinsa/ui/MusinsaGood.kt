@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -99,7 +100,7 @@ fun StyleView(
         (isLastRow && isLastColumn) -> RoundedCornerShape(bottomEnd = 6.dp)
         else -> RectangleShape
     }
-    Box(modifier = modifier.padding(2.dp)) {
+    Box(modifier = modifier.padding(2.dp).testTag("box")) {
         AsyncImage(
             model = thumbnailURL,
             modifier = Modifier.clip(shape),
