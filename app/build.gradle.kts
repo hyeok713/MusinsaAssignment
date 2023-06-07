@@ -74,8 +74,9 @@ dependencies {
 
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
     implementation("org.jetbrains.kotlin:kotlin-serialization:1.7.20")
 
@@ -103,6 +104,7 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:3.14.9")
 
     testImplementation ("junit:junit:4.13.2")
+
     androidTestImplementation("org.mockito:mockito-android:2.24.5")
     testImplementation("org.mockito:mockito-inline:2.21.0")
 }

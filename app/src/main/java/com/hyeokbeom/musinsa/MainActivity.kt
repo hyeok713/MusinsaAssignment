@@ -19,7 +19,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            val item: State<List<Item>?> = viewModel.item.collectAsState()
+            val item: State<List<Item>?> = viewModel.mainListResult.collectAsState()
 
             MusinsaTheme {
                 MainScreen(item.value)

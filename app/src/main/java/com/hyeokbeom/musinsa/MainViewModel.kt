@@ -2,7 +2,9 @@ package com.hyeokbeom.musinsa
 
 import androidx.lifecycle.ViewModel
 import com.hyeokbeom.domain.model.Item
+import com.hyeokbeom.domain.model.MainListResponse
 import com.hyeokbeom.domain.usecase.MainListUseCase
+import com.hyeokbeom.shared.Result
 import com.hyeokbeom.shared.executeResult
 import com.hyeokbeom.shared.launchOnIO
 
@@ -14,8 +16,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     internal val mockMainListUseCase: MainListUseCase
 ) : ViewModel() {
-    val item = MutableStateFlow<List<Item>?>(emptyList())
-    val a = 2
+    val mainListResult = MutableStateFlow<List<Item>?>(emptyList())
+
     init {
         launchOnIO { fetchData() }
     }
@@ -26,9 +28,9 @@ class MainViewModel @Inject constructor(
      * - Response Success 인 경우 list data 전달
      * - Response Failure 인 경우 null 전달
      */
-    internal suspend fun fetchData() = mockMainListUseCase().executeResult(
-        onSuccess = { item.value = it.list },
-        onFailure = { item.value = null }
+    internal suspend fun fetchData(): Result<MainListResponse> = mockMainListUseCase().executeResult(
+        onSuccess = { mainListResult.value = it.list },
+        onFailure = { mainListResult.value = null }
     )
 
 
@@ -39,10 +41,7 @@ class MainViewModel @Inject constructor(
      * @param currentIndex
      * - 기준 리스트 대비 현재 인덱스의 리스트 상태값 확인
      */
-
     internal fun getListState(lastIndex: Int, currentIndex: Int): ListState {
-        println("lastIndex: $lastIndex")
-        println("currentIndex: $currentIndex")
         return when {
             lastIndex == currentIndex -> ListState.Last
             lastIndex < currentIndex -> ListState.Over
@@ -57,7 +56,7 @@ class MainViewModel @Inject constructor(
  *
  */
 sealed class ListState {
-    object Last: ListState()    /* 검색 값이 배열의 LastIndex */
-    object In: ListState()      /* 검색 값이 마지막 이내 값 */
-    object Over: ListState()    /* 검색 값이 OutOfBound */
+    object Last : ListState()    /* 검색 값이 배열의 LastIndex */
+    object In : ListState()      /* 검색 값이 마지막 이내 값 */
+    object Over : ListState()    /* 검색 값이 OutOfBound */
 }

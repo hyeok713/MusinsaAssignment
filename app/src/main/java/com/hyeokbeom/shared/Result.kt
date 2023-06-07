@@ -39,15 +39,18 @@ val <T> Result<T>.errorResponse: Result.FailureResponse?
  * @param onSuccess
  * @param onFailure
  * @param onError Optional, 에러 발생(or etc) 처리
+ * @return Result 타입 리턴
  */
 fun <T> Result<T>.executeResult(
     onSuccess: (T) -> Unit,
     onFailure: (Result.FailureResponse) -> Unit,
     onError: ((Throwable?) -> Unit)? = null
-) {
+): Result<T> {
     when {
-        this.Success -> response?.let { onSuccess(it) }
-        this.Failure -> errorResponse?.let { onFailure(it) }
+        Success -> response?.let { onSuccess(it) }
+        Failure -> errorResponse?.let { onFailure(it) }
         else -> onError?.let { onError(Error) }
     }
+
+    return this
 }
