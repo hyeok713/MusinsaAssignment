@@ -30,3 +30,4 @@ Http 모듈을 직접 개발하는것은 많은 시간과 노력이 필요함. �
 
 ## Preview
 ![device-2023-06-15-161544](https://github.com/hyeok713/MusinsaAssignment/assets/72484451/1c819c37-e308-4bcc-b98b-5cbf8d9f7529)
+![device-2023-06-15-161605](https://github.com/hyeok713/MusinsaAssignment/assets/72484451/078be8a7-16e8-42ad-be0b-0a4136bc0ce2)
