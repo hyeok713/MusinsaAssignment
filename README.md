@@ -29,4 +29,4 @@ Hilt 는 안드로이드에서 DI 를 위한 Jetpack 의 권장 라이브러리�
 Http 모듈을 직접 개발하는것은 많은 시간과 노력이 필요함. 빠른 서비스 개발을 위한 필수적인 라이브러리로서 사용하게되었음. <br />
 
 ## Preview
-<img width="{80}" src"https://github-production-user-asset-6210df.s3.amazonaws.com/72484451/246025623-1c819c37-e308-4bcc-b98b-5cbf8d9f7529.gif"/>
+<img width="{80}" src"{https://github-production-user-asset-6210df.s3.amazonaws.com/72484451/246025623-1c819c37-e308-4bcc-b98b-5cbf8d9f7529.gif}"/>
